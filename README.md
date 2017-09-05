@@ -68,7 +68,7 @@ For example, on Ubuntu, add the following lines to
         #Require all granted
         # Apache <= 2.2
         Order allow,deny
-        Require all granted
+        Allow from all
         AllowOverride None
     </Directory>
 ```
