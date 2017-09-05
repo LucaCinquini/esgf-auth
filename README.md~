@@ -22,7 +22,7 @@ $ . venv/bin/activate
 ```
 Download and install crypto-cookie:
 ```
-(venv)$ git clone git@github.com:philipkershaw/crypto-cookie
+(venv)$ https://github.com/philipkershaw/crypto-cookie
 (venv)$ cd crypto-cookie
 (venv)$ python setup.py
 (venv)$ cd ..
@@ -45,9 +45,7 @@ OAuth2 client, your redirect URI is
 
 # Apache/mod_wsgi
 
-For example, on Ubuntu, add the following lines to 
-/etc/apache2/sites-available/default-ssl,conf in 
-`<VirtualHost _default_:443>`
+For example, on Ubuntu, add the following lines to /etc/apache2/sites-available/default-ssl,conf in `<VirtualHost _default_:443>`
 
 ```
     WSGIDaemonProcess esgf_auth python-path=<your_base_dir>/esgf-auth:<your_base_dir>/venv/lib/python2.7/site-packages
@@ -62,14 +60,14 @@ For example, on Ubuntu, add the following lines to
         </Files>
     </Directory>
     Alias /esgf-auth/home/static/ <your_base_dir>/esgf-auth/static/
-    <Directory <your_base_dir>/esgf-auth/static>
-        Options -Indexes
+	<Directory <your_base_dir>/esgf-auth/static>
+		Options -Indexes
         # Apache >= 2.4
         #Require all granted
         # Apache <= 2.2
         Order allow,deny
-        Require all granted
-        AllowOverride None
+		Require all granted
+		AllowOverride None
     </Directory>
 ```
 After restarting Apache, open `https://<your_hostname>/esgf-auth/thredds/` 
