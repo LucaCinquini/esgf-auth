@@ -51,7 +51,7 @@ For example, on Ubuntu, add the following lines to
 
 ```
     WSGIDaemonProcess esgf_auth python-path=<your_base_dir>/esgf-auth:<your_base_dir>/venv/lib/python2.7/site-packages
-    WSGIScriptAlias /<prefix> <your_base_dir>/esgf-auth/esgf_auth/wsgi.py process-group=esgf_auth
+    WSGIScriptAlias /esgf-auth <your_base_dir>/esgf-auth/esgf_auth/wsgi.py process-group=esgf_auth
     <Directory <your_base_dir>/esgf-auth/esgf_auth>
         <Files wsgi.py>
             # Apache >= 2.4
