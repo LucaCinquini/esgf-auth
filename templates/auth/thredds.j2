@@ -1,0 +1,21 @@
+{% extends 'auth/base.j2' %}
+
+{% block main %}
+    <div>
+    <h1>OpenID/OAuth2 authentication client for ESGF</h1>
+    <p>
+        <br><br><br>
+        <b>HTTPServer:</b><a id="filter" href="{{ authenticate_url }}?returnQueryName={{ return_query_name }}&requestAttribute={{ request_attribute }}&secretKey={{ quoted_encoded_secret_key }}&sessionCookieName={{ session_cookie_name }}&redirect={{ redirect }}">
+        /thredds/fileServer/cmip5_css02_data/cmip5/output1/CMCC/CMCC-CM/historical/day/atmos/day/r1i1p1/clt/1/clt_day_CMCC-CM_historical_r1i1p1_20050101-20051231.nc</a>
+        <br><br><br><br>
+        <b>redirect:</b> {{ redirect }}<br><br>
+        <b>authenticateUrl:</b> {{ authenticate_url }}<br>
+        <b>returnQueryName:</b> {{ return_query_name }}<br>
+        <b>requestAttribute:</b> {{ request_attribute }}<br>
+        <b>secretKey (encoded):</b> {{ encoded_secret_key }} <br>
+        <b>sessionCookieName:</b> {{ session_cookie_name }}<br><br>
+        <b>{{ session_cookie_name }}:</b> {{ session_cookie }}<br>
+        <b>{{ session_cookie_name }} (decrypted):</b> {{ decrypted_session_cookie }}<br>
+    </p>
+    </div>
+{% endblock %}

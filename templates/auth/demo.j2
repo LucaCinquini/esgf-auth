@@ -1,0 +1,49 @@
+{% extends 'auth/base.html' %}
+
+{% block main %}
+    <div>
+    <h1>OpenID/OAuth2 authentication demo for ESGF</h1>
+    <p>
+    {% if user and not user.is_anonymous %}
+        <p>
+            Hello {{ user.get_full_name|default:user.username }}!
+            <table border="0">
+                <tr><td>uid:</td><td style="font-family: Courier">{{ uid }}</td></tr>
+                <tr><td>date joined:</td><td style="font-family: Courier">{{ user.date_joined }}</td></tr>
+                <tr><td>last login:</td><td style="font-family: Courier">{{ user.last_login }}</td></tr>
+                <tr><td>access token:</td><td style="font-family: Courier">{{ access_token }}</td></tr>
+                <tr><td>refresh token:</td><td style="font-family: Courier">{{ refresh_token }}</td></tr>
+                <tr><td>X.509 cert:</td><td style="font-family: Courier">{{ certificate|linebreaksbr }}<td></tr>
+                <tr><td>X.509 key:</td><td style="font-family: Courier">{{ private_key|linebreaksbr }}<td></tr>
+                <tr><td>X.509 CN:</td><td style="font-family: Courier">{{ common_name|linebreaksbr }}<td></tr>
+            </table>
+
+        </p>
+        <p>
+            <a href="{% url 'auth:logout' %}?next={{ request.path }}"><button>Logout</button></a>
+        </p>
+    {% else %}
+        <center>
+            <br><br><br>
+            <form action="{% url 'social:begin' 'esgf-openid' %}">
+                <div class="label">OpenID</div><input type="text" size="50" name="openid_identifier">
+                <input type="submit" value="Login" name="submit">
+                <input type="text" name="next" value="{{ request.path }}" hidden>
+            </form>
+            <br><br><br>
+            <form action="{% url 'social:begin' 'esgf' %}">
+                <div class="label">OAuth2</div><input type="text" size="50" name="openid_identifier">
+                <input type="submit" value="Login" name="submit">
+                <input type="text" name="next" value="{{ request.path }}" hidden>
+            </form>
+            <br><br><br>
+            <form action="">
+                <div class="label">OpenID/OAuth2</div><input type="text" size="50" name="openid_identifier">
+                <input type="submit" value="Login" name="submit">
+                <input type="text" name="next" value="{{ request.path }}" hidden>
+            </form>
+            <p style="color: red">{{ message }}</p>
+        </center>
+    {% endif %}
+    </div>
+{% endblock %}
