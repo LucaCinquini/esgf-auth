@@ -19,9 +19,12 @@ and OAuth2.
 '''
 def home(request):
     if request.method == 'GET':
-        # redirected from THREDDS/authentication filter or from OpenID/OAuth2 server
+        '''
+        requested directly or
+        redirected from THREDDS/authentication filter or
+        redirected from OpenID/OAuth2 server or
+        '''
         if request.user.is_authenticated():
-            # redirected from OpenID/OAuth2 server
             social = None
             try:
                 social = request.user.social_auth.get(provider='esgf')
@@ -34,22 +37,59 @@ def home(request):
                 pass
 
             log.info('User {} successfully authenticated'.format(social.uid))
-            # create a session cookie
+
             session = request.session
-            encoded_secret_key = session.get('encoded_secret_key')
+            redirect_url = request.GET.get('redirect', session.get('redirect'))
+
+            if not redirect_url:
+                '''
+                not redirected from THREDDS/authentication filter
+                '''
+                return render(request,
+                        'auth/home.j2', {
+                            'openid_identifier': social.uid
+                        })
+            '''
+            redirected from OpenID/OAuth2 server or
+            redirected from THREDD/authentication filter
+            '''
+            # create a session cookie
+            encoded_secret_key = request.GET.get(
+                    'secretKey', session.get('encoded_secret_key'))
+            session_cookie_name = request.GET.get(
+                    'sessionCookieName', session.get('session_cookie_name'))
             secret_key = encoded_secret_key.decode('base64')
-            secure_cookie = SecureCookie(secret_key, social.uid, '127.0.0.1', (), '')
+            secure_cookie = SecureCookie(
+                    secret_key, social.uid, '127.0.0.1', (), '')
 
             # redirect back to THREDDS
-            redirect_url = session.get('redirect')
-            session_cookie_name = session.get('session_cookie_name')
             response = redirect(redirect_url)
-            response.set_cookie(session_cookie_name, secure_cookie.cookie_value())
+            response.set_cookie(
+                    session_cookie_name, secure_cookie.cookie_value())
             return response
 
         else:
-            # redirected from THREDDS/authentication filter
-            redirect_url = request.GET.get('redirect', None)
+            '''
+            requested directly or
+            redirected from THREDDS/authentication filter
+            '''
+            redirect_url = request.GET.get('redirect')
+            encoded_secret_key = request.GET.get('secretKey')
+            session_cookie_name = request.GET.get('sessionCookieName')
+            return_query_name = request.GET.get('returnQueryName')
+
+            '''
+            Save all params passed in the redirection by the THREDDS 
+            authentication filter before starting the OAuth2 flow. After the 
+            OAuth2 flow is completed, the params will be needed to create a 
+            redirection back to THREDDS.
+            '''
+            session = request.session
+            session['encoded_secret_key'] = encoded_secret_key
+            session['session_cookie_name'] = session_cookie_name
+            session['return_query_name'] = return_query_name
+            session['redirect'] = redirect_url
+
             return render(request,
                     'auth/home.j2', {
                         'redirect': redirect_url
@@ -57,22 +97,8 @@ def home(request):
 
     # request.method == 'POST'
     openid_identifier = request.POST.get('openid_identifier')
-    encoded_secret_key = request.GET.get('secretKey')
-    session_cookie_name = request.GET.get('sessionCookieName')
-    return_query_name = request.GET.get('returnQueryName')
-    redirect_url = request.GET.get('redirect')
-
-    '''
-    Save all params passed in the redirection by the THREDDS authentication
-    filter before starting the OAuth2 flow. After the OAuth2 flow is completed,
-    the params will be needed to create a redirection back to THREDDS.
-    '''
     session = request.session
     session['openid_identifier'] = openid_identifier
-    session['encoded_secret_key'] = encoded_secret_key
-    session['session_cookie_name'] = session_cookie_name
-    session['return_query_name'] = return_query_name
-    session['redirect'] = redirect_url
 
     protocol = discover(openid_identifier)
     if protocol:

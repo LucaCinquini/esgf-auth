@@ -1,53 +1,8 @@
-
-
-
-
-
-
-
-
-
-<!-- set page scope variables -->
-
-
-
-
-
-
-
-
-
-
-
-	
-<!-- automatic redirect if "openid" parameter is detected -->
-
-
-<!-- body -->
-
-
-
-
-
-
-
-
-
-
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-		
-		<!-- page title -->
 		<title>OpenID Login Page</title>
-		
-		<!-- common <head> content -->
-		
-
 <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/reset-fonts-grids/reset-fonts-grids.css" />
 <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/assets/skins/sam/skin.css" />
 <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/container/assets/skins/sam/container.css" />
@@ -70,28 +25,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/datatable/datatable-min.js" type="text/javascript"></script> 
 
 <link rel="stylesheet" type="text/css" href="./static/resources/base.css" />
-		
-		<!-- page specific javascript -->
-		
-	
-
-		
-
-		    
-	</head>
-	
-	<body class="yui-skin-sam">
-	
-		<table align="center" width="900px">
-		
-			<tr><td>
-
-
-
-
-
-
-
+</head>
+<body class="yui-skin-sam">
+	<table align="center" width="900px">
+	<tr><td>
 
 <style type="text/css">
 
@@ -123,16 +60,48 @@
          <img src='./static/resources/esgf.png' style="height:76px; padding:2px" />
     </div>
     <div id="logo_institution">
-    	
-    	
+
     </div>
 </div></td></tr>
 			<tr><td><hr class="line"/></td></tr>
 			<tr><td>
 
-		
 <h1>Data Access Login</h1>
 					
+
+<!-- User is authenticated -->
+{% if user.is_authenticated %}
+
+<table align="center">
+<tbody><tr>
+	<td align="center">
+	<div class="panel">
+	<table>
+	<caption>Status: logged-in</caption>
+	<tbody><tr>
+    <td>
+	<img src="./static/resources/openid.png" width="80" hspace="10px">
+	</td>
+    <td>
+	<form name="logoutForm" action="">					
+	<table border="0" cellpadding="10px" cellspacing="10px" align="center">
+	<tbody><tr>
+	<td align="center">Thank you, you are now logged in.</td>
+	</tr>
+    <tr>
+	<td align="center">Your Openid:&nbsp;<b>{{ openid_identifier }}</b></td>
+   </tr>
+   </tbody></table>
+   </form>
+   </td>
+   </tr>
+   </tbody></table>
+   </div>
+   </td>
+   </tr>
+   </tbody></table>
+
+{% else %}
 
 {% if redirect %}
 <p>&nbsp;</p><p>The following URL requires authentication: 
@@ -385,6 +354,8 @@ function sanitize()
 
  <option value=https://esgf-node.llnl.gov/esgf-idp/openid/>DOE Lawrence Livermore National Laboratory (LLNL)</option>
 
+ <option value=https://pcmdi11.llnl.gov/esgf-idp/openid/>DOE Lawrence Livermore National Laboratory (PCMDI11/LLNL)</option>
+
  <option value=https://esgf-node.jpl.nasa.gov/esgf-idp/openid/>NASA Jet Propulsion Laboratory (JPL)</option>
 
  <option value=https://esgf.nccs.nasa.gov/esgf-idp/openid/>NASA Center for Climate Simulation (NCCS)</option>
@@ -432,12 +403,14 @@ function sanitize()
 <p>&nbsp;</p><p>After logging in, you will be redirected to: 
 <br>
 <b>{{ redirect }}</b>
-</p><p>&nbsp;</p><p>
-					
+</p><p>&nbsp;</p><p></p>
+{% endif %}
 
 
-			
-</p>{% endif %}</td></tr>
+{% endif %}
+
+
+</td></tr>
 			<tr><td></td></tr>
 		
 		</table>
