@@ -38,10 +38,23 @@ Create the database
 ```
 (venv)$ ./manage.py migrate
 ```
-Set SOCIAL_AUTH_ESGF in esgf-auth/settings.py to a client id and secret 
+Create /esg/config/esgf_oauth2.json file with a client key and secret 
 received from an admin of an ESGF OAuth2 server. When you register your 
 OAuth2 client, your redirect URI is 
-`https://<your_hostname>/esgf-auth/complete/esgf/`.
+`https://<your_hostname>/esgf-auth/complete/esgf/`. Here is a sample
+esgf_oauth2.json file:
+```
+{
+    "ceda.ac.uk":
+        "key": "BUwBQaqS7qs2pSLhwHiAQlqt+hc=",
+        "secret": "Qf+EsAoDmZzdW1L/H4zAj2u/tg3ISCnqxby+2bD7hY/GCZcRJgUjFQ=="
+    },
+    "esgf-node.llnl.gov": {
+        "key": "RMRXIub0/m4RIfo7sdr2OiGOTmc=",
+        "secret": "N9PT+3/rGnjGPkEBsyzhoggsyFYdX6ptPG9Gy6Olb0j8ub/4+DJtiA=="
+    }
+}
+```
 
 # Apache/mod_wsgi
 
@@ -74,5 +87,5 @@ For example, on Ubuntu, add the following lines to
 ```
 After restarting Apache, open `https://<your_hostname>/esgf-auth/thredds/` 
 in a web browser. The page mimics THREDDS server with the authentication 
-filterYou will likely need to change ownership of the 'esgf-auth' directory to 
+filter. You will also likely need to change ownership of the 'esgf-auth' directory to 
 www-data (on Ubuntu), so Apache can access the SQLite3 database file.
