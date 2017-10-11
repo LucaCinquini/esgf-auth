@@ -100,22 +100,7 @@ SOCIAL_AUTH_SANITIZE_REDIRECTS = False
 SOCIAL_AUTH_ESGF_AUTH_EXTRA_ARGUMENTS = {\
     'access_type': 'offline',
 }
-# Key and secret pairs obtained from the ESGF OAuth2 servers
-SOCIAL_AUTH_ESGF = {
-    'ceda.ac.uk': {
-        'key': ''
-        'secret': ''
-    },
-    'esgf-node.llnl.gov': {
-        'key': ''
-        'secret': ''
-    },
-    'pcmdi11.llnl.gov': {
-        'key': ''
-        'secret': ''
-    }
-}
-
+ESGF_OAUTH2_SECRET_FILE = '/esg/config/esgf_oauth2.json'
 ESGF_RETURN_QUERY_NAME = 'redirect'
 ESGF_SESSION_COOKIE_NAME = 'session-cookie'
 ESGF_SECRET_KEY = 'xnVuDEZROQfoBT+scRkaig=='

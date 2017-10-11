@@ -1,5 +1,6 @@
 import logging
 from urlparse import urlparse
+import json
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
@@ -11,6 +12,17 @@ from crypto_cookie.auth_tkt import SecureCookie
 
 
 log = logging.getLogger(__name__)
+
+
+'''
+Get a key and secret pair from /esg/config/esgf_oauth2.json
+'''
+def get_oauth2_cred(openid_identifier):
+    parsed_openid = urlparse(openid_identifier)
+    with open(settings.ESGF_OAUTH2_SECRET_FILE, 'r') as f:
+        creds = json.loads(f.read())
+        return creds.get(parsed_openid.netloc)
+    return None
 
 
 '''
@@ -93,8 +105,7 @@ def home(request):
     print 'Protocol', protocol
     if protocol:
         request.session['next'] = request.path
-        parsed_openid = urlparse(openid_identifier)
-        credential = settings.SOCIAL_AUTH_ESGF.get(parsed_openid.netloc)
+        credential = get_oauth2_cred(openid_identifier)
         if protocol == 'OAuth2' and credential:
             '''
             It may create a race condition.  When two users authenticate at the
@@ -104,13 +115,10 @@ def home(request):
             '''
             settings.SOCIAL_AUTH_ESGF_KEY = credential['key']
             settings.SOCIAL_AUTH_ESGF_SECRET = credential['secret']
-            print 'tutaj 1'
             return redirect(reverse('social:begin', args=['esgf']))
         elif protocol == 'OpenID':
-            print 'tutaj 2'
             return redirect(reverse('social:begin', args=['esgf-openid']))
     else:
-        print 'tutaj 3'
         log.error('Could not discover authentication service for {}'.format(openid_identifier))
         return render(request,
                 'auth/home.j2', {
