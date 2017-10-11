@@ -38,8 +38,7 @@ def home(request):
 
             log.info('User {} successfully authenticated'.format(social.uid))
 
-            session = request.session
-            redirect_url = request.GET.get('redirect', session.get('redirect'))
+            redirect_url = request.GET.get('redirect', request.session.get('redirect'))
 
             if not redirect_url:
                 '''
@@ -54,10 +53,8 @@ def home(request):
             redirected from THREDD/authentication filter
             '''
             # create a session cookie
-            encoded_secret_key = request.GET.get(
-                    'secretKey', session.get('encoded_secret_key'))
-            session_cookie_name = request.GET.get(
-                    'sessionCookieName', session.get('session_cookie_name'))
+            encoded_secret_key = settings.ESGF_SECRET_KEY
+            session_cookie_name = settings.ESGF_SESSION_COOKIE_NAME
             secret_key = encoded_secret_key.decode('base64')
             secure_cookie = SecureCookie(
                     secret_key, social.uid, '127.0.0.1', (), '')
@@ -74,21 +71,14 @@ def home(request):
             redirected from THREDDS/authentication filter
             '''
             redirect_url = request.GET.get('redirect')
-            encoded_secret_key = request.GET.get('secretKey')
-            session_cookie_name = request.GET.get('sessionCookieName')
-            return_query_name = request.GET.get('returnQueryName')
 
             '''
-            Save all params passed in the redirection by the THREDDS 
+            Save 'redirect' param passed in the redirection by the THREDDS 
             authentication filter before starting the OAuth2 flow. After the 
-            OAuth2 flow is completed, the params will be needed to create a 
+            OAuth2 flow is completed, the param will be needed to create a 
             redirection back to THREDDS.
             '''
-            session = request.session
-            session['encoded_secret_key'] = encoded_secret_key
-            session['session_cookie_name'] = session_cookie_name
-            session['return_query_name'] = return_query_name
-            session['redirect'] = redirect_url
+            request.session['redirect'] = redirect_url
 
             return render(request,
                     'auth/home.j2', {
@@ -97,10 +87,10 @@ def home(request):
 
     # request.method == 'POST'
     openid_identifier = request.POST.get('openid_identifier')
-    session = request.session
-    session['openid_identifier'] = openid_identifier
-
+    request.session['openid_identifier'] = openid_identifier
+    print 'OpenID', openid_identifier
     protocol = discover(openid_identifier)
+    print 'Protocol', protocol
     if protocol:
         request.session['next'] = request.path
         parsed_openid = urlparse(openid_identifier)
@@ -114,10 +104,13 @@ def home(request):
             '''
             settings.SOCIAL_AUTH_ESGF_KEY = credential['key']
             settings.SOCIAL_AUTH_ESGF_SECRET = credential['secret']
+            print 'tutaj 1'
             return redirect(reverse('social:begin', args=['esgf']))
         elif protocol == 'OpenID':
+            print 'tutaj 2'
             return redirect(reverse('social:begin', args=['esgf-openid']))
     else:
+        print 'tutaj 3'
         log.error('Could not discover authentication service for {}'.format(openid_identifier))
         return render(request,
                 'auth/home.j2', {
@@ -132,10 +125,9 @@ THREDDS deployed, Apache is configured as a reverse proxy for the '/thredds'
 path and this view is not be accessible.
 '''
 def thredds(request):
-    encoded_secret_key = 'xnVuDEZROQfoBT+scRkaig=='
-    return_query_name = 'r'
-    request_attribute = 'id'
-    session_cookie_name = 'session-cookie'
+    encoded_secret_key = settings.ESGF_SECRET_KEY
+    return_query_name = settings.ESGF_RETURN_QUERY_NAME
+    session_cookie_name = settings.ESGF_SESSION_COOKIE_NAME
 
     if request.is_secure():
         scheme = 'https'
@@ -154,7 +146,6 @@ def thredds(request):
             'auth/thredds.j2', {
                 'authenticate_url': authenticate_url,
                 'return_query_name': return_query_name,
-                'request_attribute': request_attribute,
                 'encoded_secret_key': encoded_secret_key,
                 'quoted_encoded_secret_key': quote(encoded_secret_key),
                 'session_cookie_name': session_cookie_name,

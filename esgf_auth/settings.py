@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '5_7$jn1-c8h5@(e$x8fhk=&!mk=ea6=irwm+b22nu)h=rhox46'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG =False
+DEBUG = True
+#DEBUG =False
 
 ALLOWED_HOSTS = [ u'dev.esgf.anl.gov', ]
 
@@ -100,21 +100,25 @@ SOCIAL_AUTH_SANITIZE_REDIRECTS = False
 SOCIAL_AUTH_ESGF_AUTH_EXTRA_ARGUMENTS = {\
     'access_type': 'offline',
 }
-# Key and secret pairs obtained from the ESGF OAuth2 servers  
+# Key and secret pairs obtained from the ESGF OAuth2 servers
 SOCIAL_AUTH_ESGF = {
-#    'ceda.ac.uk': {
-#        'key': '',
-#        'secret': ''
-#    },
-#    'esgf-node.llnl.gov': {
-#        'key': '',
-#        'secret': ''
-#    },
-#    'pcmdi11.llnl.gov': {
-#        'key': '',
-#        'secret': ''
-#    }
+    'ceda.ac.uk': {
+        'key': ''
+        'secret': ''
+    },
+    'esgf-node.llnl.gov': {
+        'key': ''
+        'secret': ''
+    },
+    'pcmdi11.llnl.gov': {
+        'key': ''
+        'secret': ''
+    }
 }
+
+ESGF_RETURN_QUERY_NAME = 'redirect'
+ESGF_SESSION_COOKIE_NAME = 'session-cookie'
+ESGF_SECRET_KEY = 'xnVuDEZROQfoBT+scRkaig=='
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
