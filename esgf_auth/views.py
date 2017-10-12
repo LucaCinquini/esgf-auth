@@ -100,9 +100,7 @@ def home(request):
     # request.method == 'POST'
     openid_identifier = request.POST.get('openid_identifier')
     request.session['openid_identifier'] = openid_identifier
-    print 'OpenID', openid_identifier
     protocol = discover(openid_identifier)
-    print 'Protocol', protocol
     if protocol:
         request.session['next'] = request.path
         credential = get_oauth2_cred(openid_identifier)
