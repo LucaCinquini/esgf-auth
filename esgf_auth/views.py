@@ -120,6 +120,7 @@ def home(request):
             return redirect(reverse('social:begin', args=['esgf-openid']))
     else:
         log.error('Could not discover authentication service for {}'.format(openid_identifier))
+        redirect_url = request.session.get('redirect')
         return render(request,
                 'auth/home.j2', {
                     'redirect': redirect_url,
