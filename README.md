@@ -56,6 +56,17 @@ esgf_oauth2.json file:
 }
 ```
 
+Create a second file /esg/config/esgf_auth_config.json with additional site-specific information. An example of such configuration file is:
+```
+{
+"ESGF_HOSTNAME":"my-node.esgf.org",
+"ESGF_SECRET_KEY":"o7GIieXmQzUGslstjWS7d8==",
+"DJANGO_SECRET_KEY":"xu0jf]LBUHfLHWbHXzBcDuffHaWQYrev8ojXXd1M"
+}
+```
+where all values need to be changed by each site administrator. The value of "ESGF_SECRET_KEY" must match the value used to encode the authentication cookies that is configured in the THREDDS web.xml file.
+
+
 # Apache/mod_wsgi
 
 For example, on Ubuntu, add the following lines to 
